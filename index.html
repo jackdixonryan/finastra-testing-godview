@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Test FinGoal App</title>
+  <link rel="stylesheet" href="https://meyerweb.com/eric/tools/css/reset/reset.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+  <style>
+
+    #page-main {
+      background: #485563;  /* fallback for old browsers */
+      background: -webkit-linear-gradient(to bottom, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(to bottom, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      height: 100%;
+      padding-top: 4em;
+      font-family: "Montserrat", sans-serif;
+      padding-bottom: 4em;
+    }
+
+    #transactions-main {
+      margin: 0 auto;
+      width: 400px;
+      padding: .25em;
+      background-color: white;
+    }
+
+    .transaction {
+      width: 380px;
+      border-bottom: 1px lightgray solid;
+      padding: .5em;
+    }
+    .transaction-name {
+      font-size: 1em;
+      flex: 1;
+    }
+    .transaction-main {
+      display: flex;
+      padding: .5em;
+    }
+    .photo {
+      width: 50px;
+      border-radius: 50%;
+      margin: .25em;
+    }
+    .cta-link {
+      margin-left: .75em;
+      margin-top: .25em;
+      text-decoration: none;
+      color: rgb(96, 148, 180);
+      font-size: 1em;
+    }
+    .small-text {
+      color: gray;
+    }
+
+    .transaction-head {
+      display: flex;
+      margin: .25em;
+    }
+
+    #godview {
+      font-size: 2em;
+      text-align: center;
+      padding: 1em;
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="page-main">
+  <h1 id='godview'>GODVIEW</h1>
+  <div id="transactions-main">
+  </div>
+  </div>
+</body>
+</html>
+
+<script>
+
+  const transactionsArea = document.getElementById("transactions-main");
+
+  const xmlHTTP = new XMLHttpRequest();
+  xmlHTTP.open("GET", 'http://localhost:1881/api/finastra/finsights/862', false);
+
+  xmlHTTP.send( null );
+
+  const transactions = JSON.parse(xmlHTTP.responseText);
+
+  let transactionsHTML = ``;
+  transactions.map(transaction => {
+    
+    const transactionHTML = `
+      <div class="transaction">
+        <div class="transaction-head">
+          <p class="transaction-name">$${transaction.amountnum.toFixed(2)} @ ${transaction.simple_description}</p>
+          <p class="small-text">${transaction.date.split('T')[0]}</p>
+        </div>
+        <div class="transaction-main">
+          <div class="photo">
+            <img src="${transaction.finsight_image}" class="photo" alt=""/>
+          </div>
+          <a href="${transaction.insight_ctaurl}" class="cta-link">${transaction.insight_text}</a>
+        </div>
+      </div>
+    `;
+
+      transactionsHTML += transactionHTML;
+
+  });
+
+  transactionsArea.innerHTML = transactionsHTML;
+
+  
+</script>
